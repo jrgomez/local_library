@@ -31,8 +31,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('catalog/', include('catalog.urls')),
-    path('', RedirectView.as_view(url='catalog/')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('', RedirectView.as_view(url='/catalog/')),
+]
 
 # Use include() to add paths from the catalog application
 #urlpatterns += [
@@ -41,7 +41,7 @@ urlpatterns = [
 
 # Add URL maps to redirect the base URL to our application
 #urlpatterns += [
-#    path('', RedirectView.as_view(url='catalog/', permanent=True)),
+#    path('', RedirectView.as_view(url='/catalog/', permanent=True)),
 #]
 
 # Use static() to add URL mapping to serve static files during development (only)
