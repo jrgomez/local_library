@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "True") == "True"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
@@ -82,17 +82,25 @@ WSGI_APPLICATION = 'locallib.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# 'default': {
+#            'ENGINE': "django.db.backends.sqlite3",
+#            'NAME': os.path.join(BASE_DIR, "db.sqlite3"),
+#        }
+# removed from else len(sys.argv) > 0 and sys.argv[1] != 'collectstatic'
 
-if DEVELOPMENT_MODE is True:
+if DEVELOPMENT_MODE:
     DATABASES = {
        'default': {
             'ENGINE': "django.db.backends.sqlite3",
             'NAME': os.path.join(BASE_DIR, "db.sqlite3"),
         }
     }
-elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
-    if os.getenv("DATABASE_URL", None) is None:
+else:
+    if os.getenv("DATABASE_URL") is None and (
+        len(sys.argv) > 1 and sys.argv[1] != 'collectstatic'
+    ):
         raise Exception("DATABASE_URL environment variable not defined")
+        
     DATABASES = {
         "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
     }
